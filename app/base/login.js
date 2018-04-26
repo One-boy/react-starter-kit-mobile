@@ -22,8 +22,7 @@ export default class Login extends Component {
       if (error) {
         return
       }
-      console.log(values)
-      this.props.history.push('/')
+      this.props.history.push('/home')
     })
   }
 

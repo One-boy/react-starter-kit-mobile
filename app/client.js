@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './app'
+import Routes from './routes'
 import {
   HashRouter as Router
 } from 'react-router-dom'
@@ -12,7 +12,7 @@ const store = {}
 ReactDOM.render(
   <StoreProvider store={store}>
     <Router>
-      <App />
+      {Routes}
     </Router>
   </StoreProvider>
   ,

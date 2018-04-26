@@ -28,9 +28,12 @@ export default class TestStore extends Component {
     this.state = {}
   }
 
+  /**
+   * 更新store数据
+   */
   onUpdate = () => {
-    const { StoreHandle } = this.props
-    StoreHandle && StoreHandle.setStore('config', {
+    const { storeHandle } = this.props
+    storeHandle && storeHandle.setStore('config', {
       name: new Date(Date.now()).toLocaleString('zh-cn', {
         timeZone: 'Asia/Shanghai',
         hour12: false,
@@ -42,7 +45,7 @@ export default class TestStore extends Component {
       <div className="home-wrap" >
         <WingBlank>
           <h2>Home 组件</h2>
-          <Button onClick={() => { this.props.history.push('/login') }}>返回登陆页</Button>
+          <Button onClick={() => { this.props.history.goBack() }}>返回登陆页</Button>
           <WhiteSpace size="lg" />
           <Button onClick={this.onUpdate}>更新store</Button>
           <WhiteSpace size="lg" />
