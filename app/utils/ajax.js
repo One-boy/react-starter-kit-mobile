@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {
-  message
+  Toast,
 } from 'antd-mobile'
 import {
   prefix,
@@ -88,12 +88,12 @@ const axiosPost = (url, reqData, resolve, reject) => {
             // to login
             break
           default:
-            reject ? reject(resp) : message.error(resp.msg)
+            reject ? reject(resp) : Toast.fail(resp.msg)
             break
         }
       }
     ).catch(err => {
-      reject ? reject(err) : message.error(err.message || '未知错误')
+      reject ? reject(err) : Toast.fail(err.message || '未知错误')
     })
   return source.cancel
 }
