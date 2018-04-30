@@ -3,7 +3,7 @@
  * 使用新的MediaDevices.getUserMedia方法，当然Navigator.getUserMedia()方法已被废弃，你需要做好兼容
  */
 import React, { Component } from 'react'
-import { Button } from 'antd-mobile'
+import { Button, WhiteSpace } from 'antd-mobile'
 export default class extends Component {
   constructor(props) {
     super(props)
@@ -14,26 +14,61 @@ export default class extends Component {
     this.init()
   }
 
+  componentDidCatch(err) {
+    console.error(err)
+  }
   /**
    * 初始化
    */
   init = () => {
+    this.initVideo(() => {
+      this.initCanvas()
+    })
+  }
+
+  /**
+   * 初始化canvas，播放视频
+   */
+  initCanvas = () => {
+    if (!this.canvasNode) {
+      throw new Error('没有找到canvas node')
+    }
+    const videoRect = this.videoNode.getBoundingClientRect()
+
+    this.canvasNode.style.width = `${videoRect.width}px`
+    this.canvasNode.style.height = `${videoRect.height}px`
+    this.parentNode.style.height = `${videoRect.height}px`
+    this.canvasNode.width = videoRect.width
+    this.canvasNode.height = videoRect.height
+    const ctx = this.canvasNode.getContext('2d')
+    function randerCanvas() {
+      ctx.clearRect(0, 0, this.canvasNode.width, this.canvasNode.height)
+      ctx.drawImage(this.videoNode, 0, 0, this.canvasNode.width, this.canvasNode.height)
+      window.requestAnimationFrame(randerCanvas.bind(this))
+    }
+    window.requestAnimationFrame(randerCanvas.bind(this))
+  }
+
+  /**
+   * 初始化视频
+   */
+  initVideo = (callback) => {
     const constraints = {
       video: true,
     }
     this.getUserMediaFunc(constraints).then(mediaStream => {
       this.log('获取到视频流')
-      this.playVideo(mediaStream)
+      this.playVideo(mediaStream, callback)
+
     }).catch(error => {
       this.log(`获取到错误：${error.message || error.name || '无法获得错误详情'} `)
-      console.log('调用出错', error)
     })
   }
 
   /**
    * 播放
    */
-  playVideo = (stream) => {
+  playVideo = (stream, callback) => {
     if (!this.videoNode) {
       throw new Error('没有找到video node')
     }
@@ -41,6 +76,7 @@ export default class extends Component {
     this.videoNode.oncanplay = () => {
       this.log('播放正常。')
       this.videoNode.play()
+      callback && callback()
     }
     // 旧的浏览器可能没有srcObject
     if ('srcObject' in this.videoNode) {
@@ -81,10 +117,11 @@ export default class extends Component {
    * 拍照
    */
   capture = () => {
-    if (this.canvasNode && this.videoNode) {
-      const ctx = this.canvasNode.getContext('2d')
-      ctx.clearRect(0, 0, 345, 258)
-      ctx.drawImage(this.videoNode, 0, 0, 345, 258)
+    if (this.canvasNode) {
+      const imageData = this.canvasNode.toDataURL()
+      this.setState({
+        imgSrc: imageData,
+      })
     }
   }
 
@@ -97,18 +134,18 @@ export default class extends Component {
     }))
   }
   render() {
-    const canvasStyle = {
-      border: '1px solid #ccc'
-    }
-    const { logs } = this.state
+    const { logs, imgSrc } = this.state
     return (
-      <div>
+      <div className="camcorder-wrap">
         <h4>使用html5 canvas+js控制手机或电脑的摄像头，并截图的示例(电脑端chrome53及以上，手机ios11及以上，安卓chrome62以上)</h4>
         <p style={{ wordWrap: 'break-word' }}>xxx=={logs}</p>
-        <video width="100%" autoPlay ref={node => this.videoNode = node}></video>
+        <div className="camcorder-fun" ref={node => this.parentNode = node}>
+          <video className="camcorder-video" ref={node => this.videoNode = node} />
+          <canvas className="camcorder-canvas" ref={node => this.canvasNode = node} >你的设备不支持canvas</canvas>
+        </div>
+        <WhiteSpace size="xl" />
         <Button onClick={this.capture}>截图</Button>
-
-        <canvas width={345} height={258} style={canvasStyle} ref={node => this.canvasNode = node}></canvas>
+        <img className="camcorder-img" src={imgSrc} alt="请截图" />
 
       </div>
     )
