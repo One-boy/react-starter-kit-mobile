@@ -13,7 +13,7 @@ import Login from './base/login'
 import NOTFOUND from './base/notfound'
 import AppWrap from './pages/app'
 import { Home } from './pages/home'
-import { camera } from './pages/app'
+import { camera, camcorder } from './pages/app'
 import Transition from '@components/transition'
 
 const routes = (
@@ -23,6 +23,7 @@ const routes = (
     <Route path="/app" render={() => (
       <AppWrap>
         <Route exact path="/app/camera" component={camera} />
+        <Route exact path="/app/camcorder" component={camcorder} />
       </AppWrap>
     )} />
     <Redirect exact from="/" to="/home" />

@@ -20,9 +20,14 @@ export default class TestStore extends Component {
     this.state = {}
     this.appData = [
       {
-        text: '调用相机',
+        text: '调用相机/摄像机/图库',
         icon: 'resource/image/app.png',
         route: '/app/camera'
+      },
+      {
+        text: '控制相机/摄像机',
+        icon: 'resource/image/app.png',
+        route: '/app/camcorder'
       },
     ]
   }

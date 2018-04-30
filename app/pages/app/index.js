@@ -15,7 +15,7 @@ export default class extends Component {
   }
 
   static propTypes = {
-    children: PropTypes.object.isRequired,
+    children: PropTypes.array.isRequired,
     history: PropTypes.object.isRequired,
   }
   render() {
@@ -35,6 +35,8 @@ export default class extends Component {
 
 // 导出示例功能
 import camera from './camera'
+import camcorder from './camcorder'
 export {
   camera,
+  camcorder,
 }
