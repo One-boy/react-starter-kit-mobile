@@ -1,3 +1,3 @@
 import './index.less'
 import './login/login.less'
-import './app/index.less'
+import './app/base.less'
