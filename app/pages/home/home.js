@@ -54,6 +54,7 @@ export default class TestStore extends Component {
     }
   }
   render() {
+    //throw ('我是错误制造器')
     return (
       <div className="home-wrap" >
         <WingBlank>
