@@ -6,6 +6,7 @@ import React from 'react'
 import {
   Route,
   Redirect,
+  Switch,
 } from 'react-router-dom'
 
 
@@ -20,10 +21,13 @@ const routes = (
   <Transition >
     <Route exact path="/login" component={Login} />
     <Route exact path="/home" component={Home} />
-    <Route path="/app" render={() => (
+    <Route path="/app" render={({ match }) => (
       <AppWrap>
-        <Route exact path="/app/camera" component={camera} />
-        <Route exact path="/app/camcorder" component={camcorder} />
+        <Switch>
+          <Route exact path={`${match.url}/camera`} component={camera} />
+          <Route exact path={`${match.url}/camcorder`} component={camcorder} />
+          <Route component={NOTFOUND} />
+        </Switch>
       </AppWrap>
     )} />
     <Redirect exact from="/" to="/home" />
