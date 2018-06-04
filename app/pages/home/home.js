@@ -58,7 +58,7 @@ export default class TestStore extends Component {
       <div className="home-wrap" >
         <WingBlank>
           <h2>Home 组件</h2>
-          <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回登陆页</Button>
+          <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回登登录页</Button>
           <WhiteSpace size="lg" />
           <Button onClick={this.onUpdate}>更新store</Button>
           <WhiteSpace size="lg" />

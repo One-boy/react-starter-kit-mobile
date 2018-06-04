@@ -12,7 +12,10 @@ export default class Login extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      // 登录按钮loading
+      btnLoading: false,
+    }
   }
 
   /**
@@ -23,11 +26,19 @@ export default class Login extends Component {
       if (error) {
         return
       }
+      this.setState({
+        btnLoading: true,
+      })
       const reqData = values
-      httpLogin(reqData, res => {
-        console.log('login return ', res)
+      httpLogin(reqData, () => {
+        this.setState({
+          btnLoading: false,
+        })
         this.props.history.push('/home')
       }, error => {
+        this.setState({
+          btnLoading: false,
+        })
         Toast.fail(error.message || error.msg || '', 1)
         this.props.history.push('/home')
       }
@@ -61,7 +72,7 @@ export default class Login extends Component {
               placeholder="请输入密码"
             >密码</InputItem>
             <WhiteSpace size="lg" />
-            <Button type="primary" onClick={this.login}>登录</Button>
+            <Button type="primary" onClick={this.login} loading={this.state.btnLoading}>登录</Button>
           </WingBlank>
         </div>
       </div>
