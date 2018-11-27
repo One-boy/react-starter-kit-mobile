@@ -112,6 +112,38 @@ const axiosPost = (url, config, reqData, resolve, reject) => {
   return source.cancel
 }
 
+const axiosGet = (url, config, reqData, resolve, reject) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  let reqStr = ''
+  Object.keys(reqData).forEach(key => {
+    reqStr += `${key}=`
+    reqStr += encodeURIComponent(reqData[key])
+    reqStr += '&'
+  })
+  let newUrl = `${url}?${reqStr}`
+
+  axiosInstance.get(newUrl, {
+    cancelToken: source.token,
+    ...config,
+  })
+    .then((resp) => JSON.parse((resp.data).replace(/'/g, '"')))
+    .then(
+      resp => {
+        if (resp && Array.isArray(resp)) {
+          // 正常数据
+          resolve && resolve(resp)
+        } else {
+          reject ? reject(resp) : Toast.fail(resp.msg)
+        }
+      }
+    ).catch(err => {
+      reject ? reject(err) : Toast.fail(err.message || '未知错误')
+    })
+  return source.cancel
+}
+
 // post json字符串形式,即text/plain
 const createHttpPost = (url, target) => {
   let newUrl
@@ -124,6 +156,18 @@ const createHttpPost = (url, target) => {
   return (reqData, resolve, reject) => axiosPost(newUrl, {}, reqData, resolve, reject)
 }
 
+const createHttpGet = (url, target) => {
+  let newUrl
+  if (target) {
+    newUrl = `${target}${url}${suffix}`
+  } else {
+    newUrl = `${prefix}${url}${suffix}`
+  }
+  // reqData可以为FormData类型，axios会自动识别
+  return (reqData, resolve, reject) => axiosGet(newUrl, {}, reqData, resolve, reject)
+}
+
 export {
   createHttpPost,
+  createHttpGet,
 }
