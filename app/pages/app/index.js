@@ -15,7 +15,7 @@ export default class extends Component {
   }
 
   static propTypes = {
-    children: PropTypes.array.isRequired,
+    children: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   }
   render() {

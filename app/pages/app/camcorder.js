@@ -4,6 +4,8 @@
  */
 import React, { Component } from 'react'
 import { Button, WhiteSpace } from 'antd-mobile'
+import AppWrap from '@pages/app'
+
 export default class extends Component {
   constructor(props) {
     super(props)
@@ -136,18 +138,19 @@ export default class extends Component {
   render() {
     const { logs, imgSrc } = this.state
     return (
-      <div className="camcorder-wrap">
-        <h4>使用html5 canvas+js控制手机或电脑的摄像头，并截图的示例(电脑端chrome53及以上，手机ios11及以上，安卓chrome62以上)</h4>
-        <p style={{ wordWrap: 'break-word' }}>xxx=={logs}</p>
-        <div className="camcorder-fun" ref={node => this.parentNode = node}>
-          <video className="camcorder-video" ref={node => this.videoNode = node} />
-          <canvas className="camcorder-canvas" ref={node => this.canvasNode = node} >你的设备不支持canvas</canvas>
+      <AppWrap>
+        <div className="camcorder-wrap">
+          <h4>使用html5 canvas+js控制手机或电脑的摄像头，并截图的示例(电脑端chrome53及以上，手机ios11及以上，安卓chrome62以上)</h4>
+          <p style={{ wordWrap: 'break-word' }}>xxx=={logs}</p>
+          <div className="camcorder-fun" ref={node => this.parentNode = node}>
+            <video className="camcorder-video" ref={node => this.videoNode = node} />
+            <canvas className="camcorder-canvas" ref={node => this.canvasNode = node} >你的设备不支持canvas</canvas>
+          </div>
+          <WhiteSpace size="xl" />
+          <Button onClick={this.capture}>截图</Button>
+          <img className="camcorder-img" src={imgSrc} alt="请截图" />
         </div>
-        <WhiteSpace size="xl" />
-        <Button onClick={this.capture}>截图</Button>
-        <img className="camcorder-img" src={imgSrc} alt="请截图" />
-
-      </div>
+      </AppWrap>
     )
   }
 }
