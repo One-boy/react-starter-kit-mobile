@@ -1,38 +1,46 @@
-/**
- * 根路由
+/*
+ * @Author: hy 
+ * @Date: 2019-05-08 09:43:23 
+ * @Last Modified by: hy
+ * @Last Modified time: 2019-05-08 09:44:28
  */
 
-import React from 'react'
-import {
-  Route,
-  Redirect,
-  // Switch,
-  HashRouter as Router,
-} from 'react-router-dom'
-import CoverRouter from '@components/coverRouter'
-import CatchError from '@components/catchError'
-import Login from './base/login'
-// import NOTFOUND from './base/notfound'
-// import AppWrap from './pages/app'
-import { Home } from './pages/home'
-import { camera, camcorder } from './pages/app'
-// import Transition from '@components/transition'
+// 路由
+import HomePage from '@pages/HomePage'
+import AboutPage from '@pages/AboutPage'
+import FormPage from '@pages/FormPage'
+import DynamicRoutePage from '@pages/DynamicRoutePage'
+import NotFoundPage from '@pages/NotFoundPage'
+import PanelLeftPage from '@pages/PanelLeftPage'
+import PanelRightPage from '@pages/PanelRightPage'
 
-
-const routes = (
-  <Router>
-    <CatchError>
-      <CoverRouter path="/login" component={Login} />
-      <CoverRouter path="/home" component={Home} />
-      <CoverRouter path={'/app/camera'} component={camera} />
-      <CoverRouter path={'/app/camcorder'} component={camcorder} />
-      {/* 访问根目录时，跳转到/home */}
-      <Route exact path='/' render={() => {
-        return <Redirect from="/" to="/login" />
-      }} />
-      {/* <Route component={NOTFOUND} /> */}
-    </CatchError>
-  </Router>
-)
-
-export default routes
+export default [
+  {
+    path: '/',
+    component: HomePage,
+  },
+  {
+    path: '/panel-left/',
+    component: PanelLeftPage,
+  },
+  {
+    path: '/panel-right/',
+    component: PanelRightPage,
+  },
+  {
+    path: '/about/',
+    component: AboutPage,
+  },
+  {
+    path: '/form/',
+    component: FormPage,
+  },
+  {
+    path: '/dynamic-route/blog/:blogId/post/:postId/',
+    component: DynamicRoutePage,
+  },
+  {
+    path: '(.*)',
+    component: NotFoundPage,
+  },
+]

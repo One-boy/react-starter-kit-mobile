@@ -2,10 +2,15 @@
 /**
  * webpack基础配置
  */
-/* eslint no-undef:0*/
+/* eslint no-undef:0 */
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HappyPack = require('happypack')
+const os = require('os')
+const threadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+
 
 function resolve(p) {
   return path.join(__dirname, p)
@@ -13,12 +18,12 @@ function resolve(p) {
 
 const webpackConfigBase = {
   entry: {
-    client: resolve('../app/client.js')
+    client: ['@babel/polyfill', resolve('../app/client.js')]
   },
   output: {
     path: resolve('../dist'),
     filename: '[name].[hash:4].js',
-    chunkFilename: 'chunks/[name].[hash:4.js]',
+    chunkFilename: 'chunks/[name].[hash:4].js',
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -31,6 +36,7 @@ const webpackConfigBase = {
       '@config': resolve('../app/config'),
       '@pages': resolve('../app/pages'),
       '@utils': resolve('../app/utils'),
+      '@Mock': resolve('../app/Mock'),
     },
   },
   module: {
@@ -38,31 +44,13 @@ const webpackConfigBase = {
       {
         exclude: /node_modules/,
         test: /\.(js|jsx)$/,
-        use: 'babel-loader'
+        use: 'happypack/loader?id=happyBabel',
       },
       {
-        test: /\.css$/,
+        test: /\.(css|less)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { sourceMap: true, minimize: true, } },
-        ],
-      },
-      {
-        test: /\.less$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { sourceMap: true, minimize: true, } },
-          {
-            loader: 'less-loader',
-            options: {
-              sourceMap: true,
-              javascriptEnabled: true,
-              paths: [
-                resolve('../node_modules'),
-                resolve('../app/style'),
-              ]
-            }
-          }
+          'happypack/loader?id=happyStyle',
         ],
       },
       {
@@ -90,6 +78,45 @@ const webpackConfigBase = {
     ],
   },
   plugins: [
+    // happypack处理js
+    new HappyPack({
+      id: 'happyBabel',
+      loaders: [
+        { loader: 'babel-loader' },
+      ],
+      threadPool,
+      verbose: true,
+    }),
+    // happypack处理样式
+    new HappyPack({
+      id: 'happyStyle',
+      loaders: [
+        {
+          loader: 'css-loader', options: {
+            sourceMap: true,
+            minimize: true, //这个需要注释，如果开启，则开发时样式sourcemap始终是最后一行。
+          }
+        },
+        {
+          loader: 'postcss-loader', options: {
+            sourceMap: true,//为true,在样式追溯时，显示的是编写时的样式，为false，则为编译后的样式
+          }
+        },
+        {
+          loader: 'less-loader',
+          options: {
+            sourceMap: true,
+            javascriptEnabled: true,
+            paths: [
+              resolve('../node_modules'),
+              resolve('../app/style'),
+            ]
+          }
+        }
+      ],
+      threadPool,
+      verbose: true,
+    }),
     // 打包后的资源引用到html文件内
     new HtmlWebpackPlugin({
       template: resolve('../app/index.html'),
@@ -100,7 +127,12 @@ const webpackConfigBase = {
       // both options are optional
       filename: 'style.[hash:4].css',
       chunkFilename: '[id].css'
-    })
+    }),
+    // 去掉moment语言包
+    // 使用的时候，则需要引入中文包，
+    // import 'moment/locale/zh-cn'
+    // moment.locale('zh-cn') // 设置为中文
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
 }
 

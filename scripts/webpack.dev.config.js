@@ -1,7 +1,7 @@
 /**
  * 开发环境配置
  */
-/* eslint no-undef:0*/
+/* eslint no-undef:0 */
 
 const webpackConfigBase = require('./webpack.base.config')
 const merge = require('webpack-merge')
@@ -17,7 +17,7 @@ const webpackConfigDev = {
   mode: 'development',
   plugins: [
     new OpenBrowserPlugin({
-      url: `http://localhost:${PORT}/#/login`
+      url: `http://localhost:${PORT}/`
     }),
   ],
   devtool: 'source-map',
