@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "blob-polyfill": "^2.0.20171115",
     "formdata-polyfill": "^3.0.17",
     "framework7": "^4.5.2",
